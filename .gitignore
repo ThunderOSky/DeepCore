@@ -1,0 +1,15 @@
+__pycache__
+.pyc
+.pyo
+.pyd
+
+backups
+.db
+
+game.db
+backup_settings.json
+settings.json
+Thumbs.db
+desktop.ini
+.vscode
+.idea
