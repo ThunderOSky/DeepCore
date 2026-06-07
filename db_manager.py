@@ -13,7 +13,6 @@ c = conn.cursor()
 
 def init_db():
     create_tables()
-    create_settings_table()
     create_admins_table()
     migrate_saved_games_table()
     add_experience_column()
@@ -50,14 +49,7 @@ def create_tables():
                   lvl INTEGER DEFAULT 1,
                   experience INTEGER DEFAULT 0,
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
-    
-    c.execute('''CREATE TABLE IF NOT EXISTS user_settings
-                 (user TEXT PRIMARY KEY,
-                  music REAL DEFAULT 0.5,
-                  sound REAL DEFAULT 0.5,
-                  theme TEXT DEFAULT 'light',
-                  FOREIGN KEY (user) REFERENCES user(name) ON DELETE CASCADE)''')
-    
+        
     c.execute('''CREATE TABLE IF NOT EXISTS saved_games
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
                   user TEXT NOT NULL,
@@ -119,14 +111,6 @@ def migrate_saved_games_table():
     except sqlite3.OperationalError:
         pass
     
-    conn.commit()
-
-def create_settings_table():
-    c.execute('''CREATE TABLE IF NOT EXISTS settings
-                 (user TEXT PRIMARY KEY,
-                  music REAL DEFAULT 0.5,
-                  sound REAL DEFAULT 0.5,
-                  theme TEXT DEFAULT 'light')''')
     conn.commit()
 
 def save_game_state(user, game):
@@ -311,17 +295,15 @@ def check_user_credentials(username, password):
 def update_player_nickname(old_nickname, new_nickname):
     try:
         c.execute('UPDATE user SET name = ? WHERE name = ?', (new_nickname, old_nickname))
-        c.execute('UPDATE user_settings SET user = ? WHERE user = ?', (new_nickname, old_nickname))
         c.execute('UPDATE saved_games SET user = ? WHERE user = ?', (new_nickname, old_nickname))
-        
-        for diff in ['easy', 'average', 'hard', 'super']:
-            try:
-                c.execute(f'UPDATE {diff} SET name = ? WHERE name = ?', (new_nickname, old_nickname))
-            except:
-                pass
+        c.execute('UPDATE daily_results SET username = ? WHERE username = ?', (new_nickname, old_nickname))
+
+        c.execute('UPDATE complete_games SET name = ? WHERE name = ?', (new_nickname, old_nickname))
+
         conn.commit()
         return True
-    except:
+    except Exception as e:
+        print(f"Error updating nickname: {e}")
         return False
 
 def delete_top_record(difficulty, name, time, game_type):

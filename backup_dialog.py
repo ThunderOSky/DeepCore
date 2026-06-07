@@ -185,7 +185,7 @@ def show_backup_dialog(screen, nickname):
         if save_btn is None:
             save_btn = AnimatedButton(btn_start_x, btn_y, btn_w, btn_h, 'СОХРАНИТЬ', button_font, A, CC, AH)
             backup_now_btn = AnimatedButton(btn_start_x + btn_w + btn_spacing, btn_y, btn_w, btn_h, 'СОЗДАТЬ КОПИЮ', button_font, theme['win'], CC)
-            cancel_btn = AnimatedButton(btn_start_x + (btn_w + btn_spacing) * 2, btn_y, btn_w, btn_h, 'ОТМЕНА', button_font, theme['error'], CC)
+            cancel_btn = AnimatedButton(btn_start_x + (btn_w + btn_spacing) * 2, btn_y, btn_w, btn_h, 'ВЕРНУТЬСЯ', button_font, theme['error'], CC)
         else:
             save_btn.set_position(btn_start_x, btn_y)
             backup_now_btn.set_position(btn_start_x + btn_w + btn_spacing, btn_y)

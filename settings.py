@@ -435,20 +435,43 @@ def settings(nickname, place):
                 update_click_sound()
             
             if change_pass_btn.is_clicked(mp, True):
-                if not cur_pass: pass_msg = 'Введите текущий пароль'; pass_msg_col = ER; pass_msg_timer = 180
-                elif not new_pass: pass_msg = 'Введите новый пароль'; pass_msg_col = ER; pass_msg_timer = 180
-                elif new_pass != conf_pass: pass_msg = 'Новые пароли не совпадают'; pass_msg_col = ER; pass_msg_timer = 180
-                elif cur_pass == new_pass: pass_msg = 'Новый пароль не должен быть таким же, как старый'; pass_msg_col = ER; pass_msg_timer = 180
+                if not cur_pass:
+                    pass_msg = 'Введите текущий пароль'
+                    pass_msg_col = ER
+                    pass_msg_timer = 180
+                elif not new_pass:
+                    pass_msg = 'Введите новый пароль'
+                    pass_msg_col = ER
+                    pass_msg_timer = 180
+                elif new_pass != conf_pass:
+                    pass_msg = 'Новые пароли не совпадают'
+                    pass_msg_col = ER
+                    pass_msg_timer = 180
+                elif cur_pass == new_pass:
+                    pass_msg = 'Новый пароль не должен быть таким же, как старый'
+                    pass_msg_col = ER
+                    pass_msg_timer = 180
                 else:
                     from db_manager import get_user_data
-                    ud = get_user_data(); ok = False
+                    from hash_utils import verify_password 
+                    
+                    ud = get_user_data()
+                    ok = False
                     for i in range(len(ud['logins'])):
-                        if ud['logins'][i] == nickname and ud['passwords'][i] == cur_pass: ok = True; break
+                        if ud['logins'][i] == nickname and verify_password(cur_pass, ud['passwords'][i]): 
+                            ok = True
+                            break
+                    
                     if ok:
                         if update_player_password(nickname, new_pass):
-                            pass_msg = 'Пароль успешно сменён'; pass_msg_col = theme['win']; pass_msg_timer = 180
+                            pass_msg = 'Пароль успешно сменён'
+                            pass_msg_col = theme['win']
+                            pass_msg_timer = 180
                             cur_pass = new_pass = conf_pass = ''
-                    else: pass_msg = 'Неверно введён старый пароль'; pass_msg_col = ER; pass_msg_timer = 180
+                    else:
+                        pass_msg = 'Неверно введён старый пароль'
+                        pass_msg_col = ER
+                        pass_msg_timer = 180
             
             if apply_btn.is_clicked(mp, True):
                 update_settings(music=current_vm, sound=current_vs, theme=current_theme, 
