@@ -29,7 +29,6 @@ class VignetteEffect:
         
         screen.blit(self._cache, (0, 0))
 
-
 class ChromaticEffect:
     def __init__(self, width, height):
         self.width = width
